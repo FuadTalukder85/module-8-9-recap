@@ -5,4 +5,10 @@ const router = express.Router();
 
 //will call controller function
 router.post('/create-student', StudentControllers.createStudent);
+
+//get all student
+router.get('/', StudentControllers.getAllStudents);
+
+//get single student by id
+router.get('/:studentId', StudentControllers.getSingleStudent)
 export const StudentsRoutes = router;
