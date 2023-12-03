@@ -16,23 +16,12 @@ const userNameSchema = new Schema<TUserName>({
     required: [true, 'First name is required.'],
     trim: true,
     maxlength: [20, 'first name can not be more than 20 characters'],
-    // validate: {
-    //   validator: function (value: string) {
-    //     const firstNameStr = value.charAt(0).toUpperCase() + value.slice(1);
-    //     return firstNameStr === value;
-    //   },
-    //   message: '{VALUE} is not capitalize formate'
-    // }
   },
   middleName: { type: String, trim: true },
   lastName: {
     type: String,
     trim: true,
     required: [true, 'Last name is required.'],
-    // validate: {
-    //   validator: (value: string) => validator.isAlpha(value),
-    //   message: '{VALUE} is not valid'
-    // }
   },
 });
 
@@ -83,10 +72,11 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Student ID is required.'],
       unique: true,
     },
-    password: {
-      type: String,
-      required: [true, 'Student password is required.'],
-      maxlength: [20, 'password can not be more than 20 characters'],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, 'User ID is required.'],
+      unique: true,
+      ref: 'User',
     },
 
     name: {
@@ -106,10 +96,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: String,
       required: [true, 'Email is required.'],
       unique: true,
-      // validate: {
-      //   validator: (value: string) => validator.isEmail(value),
-      //   message: '{VALUE} is not an valid email type'
-      // }
     },
     contactNo: {
       type: String,
@@ -141,12 +127,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian details are required.'],
     },
     profileImg: { type: String },
-    isActive: {
-      type: String,
-      enum: ['active', 'blocked'],
-      default: 'active',
-      message: 'Invalid status. Must be "active" or "blocked".',
-    },
     isDeleted: {
       type: Boolean,
       default: false,
