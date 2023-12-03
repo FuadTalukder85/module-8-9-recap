@@ -7,8 +7,6 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -139,24 +137,9 @@ const studentSchema = new Schema<TStudent, StudentModel>(
   },
 );
 
-// pre save middleware / hook
-studentSchema.pre('save', async function (next) {
-  // console.log(this, 'pre hook: we will save data');
-  //hashing pass and save into db
-
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-
-// post middleware / hook
-studentSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
+//virtual
+studentSchema.virtual('fullName').get(function () {
+  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
 // query middleware
@@ -175,21 +158,10 @@ studentSchema.pre('aggregate', function (next) {
   next();
 });
 
-//virtual
-studentSchema.virtual('fullName').get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
-});
-
 //creating a custom static method
 studentSchema.statics.isUserExists = async function (id: string) {
   const existingUser = await Student.findOne({ id });
   return existingUser;
 };
-
-// creating a custom instance method
-// studentSchema.methods.isUserExists = async function (id: string) {
-//   const existingUser = await Student.findOne({ id });
-//   return existingUser;
-// };
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
