@@ -8,7 +8,7 @@ const getAllStudentFromDB = async () => {
   return result;
 };
 
-// get single student by id
+// get single student by idd
 const getSingleStudentFromDB = async (id: string) => {
   // const result = await Student.findOne({ id });
 
